@@ -12,7 +12,7 @@ const int leftLed = 11;
 const int rightLed = 9;
 const int led = 13;
 
-const int SAMENESS_THRESHOLD = 0;
+const int SAMENESS_THRESHOLD = 2;
 
 String leftStr, rightStr, outStr;
 
@@ -78,8 +78,8 @@ void loop()
     digitalWrite( led, LOW );  
     digitalWrite( leftMotorPin, HIGH );
     digitalWrite( rightMotorPin, HIGH );
-    digitalWrite( leftLed, HIGH );
-    digitalWrite( rightLed, HIGH );
+    digitalWrite( leftLed, LOW );
+    digitalWrite( rightLed, LOW );
   }
   
 }
