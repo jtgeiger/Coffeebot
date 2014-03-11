@@ -12,6 +12,10 @@ const int leftLed = 11;
 const int rightLed = 9;
 const int led = 13;
 
+const int SAMENESS_THRESHOLD = 0;
+
+String leftStr, rightStr, outStr;
+
 void setup()
 {
   pinMode( leftMotorPin, OUTPUT );
@@ -22,6 +26,11 @@ void setup()
   
   pinMode( leftLightSensor, INPUT );
   pinMode( rightLightSensor, INPUT );
+  
+  Serial.begin( 9600 );
+  leftStr = String( "left: " );
+  rightStr = String( ", right: " );
+  outStr = String();
 }
 
 void loop()
@@ -37,7 +46,17 @@ void loop()
   
   delay( 2000 );
 */
-  if ( analogRead( leftLightSensor ) < analogRead( rightLightSensor ) )
+
+  int leftLightSensorVal = analogRead( leftLightSensor );
+  int rightLightSensorVal = analogRead( rightLightSensor );
+  int diff = leftLightSensorVal - rightLightSensorVal;
+  int percent = ( (float)leftLightSensorVal / rightLightSensorVal ) * 100;
+  outStr = leftStr + leftLightSensorVal + rightStr + rightLightSensorVal + ", diff=" + diff + ", percent=" + percent;
+  
+  Serial.println( outStr );
+  
+  //if ( leftLightSensorVal < rightLightSensorVal )
+  if ( diff < -SAMENESS_THRESHOLD )
   {
     digitalWrite( led, HIGH );
     digitalWrite( leftMotorPin, HIGH );
@@ -45,7 +64,8 @@ void loop()
     digitalWrite( leftLed, LOW );
     digitalWrite( rightLed, HIGH );
   }
-  else if ( analogRead( leftLightSensor ) > analogRead( rightLightSensor ) )
+  else if ( diff > SAMENESS_THRESHOLD )
+  //else
   {
     digitalWrite( led, LOW );  
     digitalWrite( leftMotorPin, LOW );
