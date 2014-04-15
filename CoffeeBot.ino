@@ -16,6 +16,10 @@ const int SAMENESS_THRESHOLD = 2;
 
 String leftStr, rightStr, outStr;
 
+const unsigned int FIRST_PERIOD_MS = 2000;
+const unsigned int TURN_EVERY_PERIOD_MS = 5000;
+const unsigned int TURN_DURATION_MS = 500;
+
 void setup()
 {
   pinMode( leftMotorPin, OUTPUT );
@@ -47,6 +51,28 @@ void loop()
   delay( 2000 );
 */
 
+  unsigned long currentMs = millis();
+  
+  if ( currentMs < FIRST_PERIOD_MS )  //First period after boot.
+  {
+    turnRight();
+    return;
+  }
+  else if ( currentMs % TURN_EVERY_PERIOD_MS < TURN_DURATION_MS )  //Every X seconds, turn a random direction for Y seconds, to make things more interesting.
+  {
+    long randy = random( 2 );
+    if ( randy == 0 )
+    {
+      turnLeft();
+    }
+    else
+    {
+      turnRight();
+    }
+    
+    return;
+  }
+
   int leftLightSensorVal = analogRead( leftLightSensor );
   int rightLightSensorVal = analogRead( rightLightSensor );
   int diff = leftLightSensorVal - rightLightSensorVal;
@@ -58,29 +84,44 @@ void loop()
   //if ( leftLightSensorVal < rightLightSensorVal )
   if ( diff < -SAMENESS_THRESHOLD )
   {
-    digitalWrite( led, HIGH );
-    digitalWrite( leftMotorPin, HIGH );
-    digitalWrite( rightMotorPin, LOW );
-    digitalWrite( leftLed, LOW );
-    digitalWrite( rightLed, HIGH );
+    turnRight();
   }
   else if ( diff > SAMENESS_THRESHOLD )
   //else
   {
+    turnLeft();
+  }
+  else
+  {
+    goStraight();
+  }
+  
+}
+
+void goStraight()
+{
+    digitalWrite( led, LOW );  
+    digitalWrite( leftMotorPin, HIGH );
+    digitalWrite( rightMotorPin, HIGH );
+    digitalWrite( leftLed, LOW );
+    digitalWrite( rightLed, LOW );
+}
+
+void turnLeft()
+{
     digitalWrite( led, LOW );  
     digitalWrite( leftMotorPin, LOW );
     digitalWrite( rightMotorPin, HIGH );
     digitalWrite( leftLed, HIGH );
     digitalWrite( rightLed, LOW );
-  }
-  else
-  {
-    digitalWrite( led, LOW );  
+}
+
+void turnRight()
+{
+    digitalWrite( led, HIGH );
     digitalWrite( leftMotorPin, HIGH );
-    digitalWrite( rightMotorPin, HIGH );
+    digitalWrite( rightMotorPin, LOW );
     digitalWrite( leftLed, LOW );
-    digitalWrite( rightLed, LOW );
-  }
-  
+    digitalWrite( rightLed, HIGH );
 }
 
