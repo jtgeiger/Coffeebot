@@ -3,7 +3,8 @@ This program makes your robot either seek light or avoid light, depending on how
 Try this program first, and then start modifying it to give your robot the personality you desire.
 Shine a flashlight, or hold your hand over a light sensor, to change the behaviour.
 */
-
+//TODO: Startup and turn left 1 second, right 2 seconds, left 1 second to get back to start.  Then 
+//every 5 seconds, stop for a bit, look left & right again, then resume light seeking.
 const int leftMotorPin = 5;
 const int rightMotorPin = 3;
 const int leftLightSensor = A0;
